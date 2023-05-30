@@ -1,5 +1,5 @@
 import { redirect, useLoaderData, useNavigate } from "react-router-dom";
-import { buyBooks, fetchBooks, searchBooks } from "../service/bookService";
+import { decreaseBookOrder, fetchBooks, increaseBookOrder, placeOrder, searchBooks } from "../service/bookService";
 import { useEffect, useState } from "react";
 import parseJwt from "../service/jwtService";
 import { actionDelete } from "../service/actionService";
@@ -87,66 +87,29 @@ export default function AdminView() {
   }, [books]);
 
   // Increase order number
-  function increaseOrder(event) {
-    const { value } = event.target;
-    const updateOrder = books.map((book, i) => {
-        if (parseInt(value) === parseInt(i)) {
-            if(book.order < book.quantity) {
-                book.order++;
-                console.log(book);
-            } 
-            return book;
-        } else {
-            return book;
-        }
-    });
+  async function increaseOrder(event) {
+    const updateOrder = await increaseBookOrder(event, books)
     setBooks(updateOrder);
   }
 
 
   // Decrease order number
-  function decreaseOrder(event) {
-    const { value } = event.target;
-    const updateOrder = books.map((book, i) => {
-        if (parseInt(value) === parseInt(i)) {
-            if(book.order > 0) {
-                book.order--;
-                console.log(book);
-            }
-            return book;
-        } else {
-            return book;
-        }
-    });
+  async function decreaseOrder(event) {
+    const updateOrder = await decreaseBookOrder(event, books)
     setBooks(updateOrder);
   }
 
 
   // Order function, happens when we press the order button
   async function orderBooks(event) {
-    const { value } = event.target;
-    const order = books[value]
-
-    const data = await buyBooks(order.title, order.order)
-    console.log(data)
-
-    if(data.message) {
-      alert("Purchase was successful");
-    } else if (data.error === "Digital signing is invalid, request new token") {
-      alert("Session expired, please log in again")
-      navigate("/login")
+    const { data, reRender, reRenderUsers } = await placeOrder(event, books);
+    console.log(data);
+    if (data.error === "Digital signing is invalid, request new token") {
+      navigate("/login");
     } else {
-      alert("Something went wrong, try again or relog")
-    }
-
-    const reRender = await fetchBooks()
-      reRender.books.forEach(book => {
-        book.order = 0;
-      });
-      
-      setBooks(reRender.books)
-      const reRenderUsers = await getUsers();
+      setBooks(reRender.books);
       setUsers(reRenderUsers);
+    }
   }
 
 

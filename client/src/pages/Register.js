@@ -1,5 +1,5 @@
 import React from "react"
-import { Form, Link, redirect, useActionData, useNavigate } from "react-router-dom"
+import { Form, Link, redirect, useActionData } from "react-router-dom"
 import { registerUser } from "../service/authService"
 
 export async function action({ request }) {
