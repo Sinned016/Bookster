@@ -1,3 +1,7 @@
+/**UserAction Component
+ * This component renders as a pop-up window whenever admin wants to delete/promote a user
+ */
+
 import { actionDeleteUser, actionPromoteUser, getUsers } from "../service/userService";
 
 export default function UserAction({user, setUsers, toggle, action}) {

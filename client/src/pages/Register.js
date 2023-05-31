@@ -1,3 +1,9 @@
+/** Register Component
+ * This component uses a custom action when the Form is submitted.
+ * This component is used to create a new account.
+ * If the user enters invalid credentials an errorMessage is displayed on the screen.
+ */
+
 import React from "react"
 import { Form, Link, redirect, useActionData } from "react-router-dom"
 import { registerUser } from "../service/authService"
@@ -33,7 +39,7 @@ const Register = () => {
             <Form data-testid="login-form" className="login-form" method="post" replace>
                 <input data-testid="username-field" name="username" type="text" placeholder="Username" />
 
-                <input data-testid="password-field" name="password" type="text" placeholder="Password" />
+                <input data-testid="password-field" name="password" type="password" placeholder="Password" />
 
                 <button data-testid="login-btn" className="login-btn">Create account</button>
             </Form>

@@ -1,7 +1,17 @@
+/** UserView Component
+ * This component will render if you log in with a user account / if you have the USER role.
+ * When entering this page we recieve all the books through our "loader".
+ * We display all the books through smaller components.
+ * This component uses short-polling to rerender if it recieves new data that does not match the current version.
+ */
+
 import { redirect, useLoaderData } from "react-router-dom";
-import { buyBooks, fetchBooks, searchBooks } from "../service/bookService";
+import { fetchBooks, searchBooks } from "../service/bookService";
 import { useEffect, useState } from "react";
 import parseJwt from "../service/jwtService";
+import BookTable from "../components/BookTable";
+import MapBooks from "../components/MapBooks";
+import { polling } from "../service/pollingService";
 
 export function loader() {
     const token = sessionStorage.getItem("AuthToken")
@@ -32,104 +42,23 @@ export default function UserView() {
     }, [loaderBooks]);
 
     //Polling
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const newBooks = await fetchBooks();
-      const currentVersion = sessionStorage.getItem("BooksVersion");
-      console.log(newBooks.version);
-
-      if(newBooks.version.toString() !== currentVersion.toString()) {
-        for (let i = 0; i < newBooks.books.length; i++) {
-          if(books[i]) {
-            newBooks.books[i].order = books[i].order
-          } else {
-            newBooks.books[i].order = 0
-          }
-        }
-        setBooks(newBooks.books)
-        sessionStorage.setItem("BooksVersion", newBooks.version)
-      }
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, [books]);
+    useEffect(() => {
+      const interval = setInterval(async () => {
+        const newVersion = await polling(books);
+        console.log(newVersion);
+        setBooks(newVersion);
+      }, 10000);
+      return () => clearInterval(interval);
+    }, [books]);
     
-
-  // Increase order number
-  function increaseOrder(event) {
-    const { value } = event.target;
-    const updateOrder = books.map((book, i) => {
-        if (parseInt(value) === parseInt(i)) {
-            if(book.order < book.quantity) {
-                book.order++;
-                console.log(book);
-            } 
-            return book;
-        } else {
-            return book;
-        }
-    });
-    setBooks(updateOrder);
-  }
-
-  // Decrease order number
-  function decreaseOrder(event) {
-    const { value } = event.target;
-    const updateOrder = books.map((book, i) => {
-        if (parseInt(value) === parseInt(i)) {
-            if(book.order > 0) {
-                book.order--;
-                console.log(book);
-            }
-            return book;
-        } else {
-            return book;
-        }
-    });
-    setBooks(updateOrder);
-  }
-
-// Order function, happens when we press the order button
-async function orderBooks(event) {
-  const { value } = event.target;
-  const order = books[value]
-
-  const data = await buyBooks(order.title, order.order)
-  console.log(data)
-
-  if(data.message) {
-    alert("Purchase was successful")
-  } else {
-    alert("Something went wrong, try again or relog")
-  }
-
-  const reRender = await fetchBooks()
-  reRender.books.forEach(book => {
-      book.order = 0;
-  });
-  setBooks(reRender.books)
-}
 
   // Mapping through our books and rendering bookElements in our jsx
   useEffect(() => {
     if(books !== null) {
-      const bookElements = books?.map((book, index) => {
-        return (
-          <tr key={index}>
-            <td>{book.title}</td>
-            <td>{book.author}</td>
-            <td>{book.quantity === 0 ? "Out of stock" : book.quantity + " left"}</td>
-            <td className="order-td">
-                  <button data-testid="decrease" disabled={book.quantity === 0} value={index} onClick={decreaseOrder}>-</button>
-                  <div>{book.order}</div>
-                  <button data-testid="increase" disabled={book.quantity === 0} value={index} onClick={increaseOrder}>+</button>
-                  <button disabled={book.quantity === 0} value={index} onClick={orderBooks}>Order</button>
-            </td>
-          </tr>
-        );
-      });
-      setBookElements(bookElements);
+      const mappedBooks = <MapBooks books={books} setBooks={setBooks} />
+      setBookElements(mappedBooks);
     }
+
     //eslint-disable-next-line
   }, [books]);
 
@@ -171,18 +100,7 @@ async function orderBooks(event) {
         onKeyDown={handleKeyDown}
         onChange={handleChange}
       />
-      <table data-testid="book-table" className="book-table">
-        <thead>
-          <tr>
-            <th className="table-header">Book title</th>
-            <th className="table-header">Book author</th>
-            <th className="table-header">Availability</th>
-            <th className="table-header">Order</th>
-
-          </tr>
-        </thead>
-        <tbody>{bookElements}</tbody>
-      </table>
+      <BookTable bookElements={bookElements}/>
     </>
   );
 }

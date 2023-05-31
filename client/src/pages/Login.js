@@ -1,3 +1,10 @@
+/** Login Component
+ * This component uses a custom action when the Form is submitted.
+ * If the user enters valid credentials, a JWT-token will be stored in sessionStorage.
+ * The user will be redirected to the next page based on the role parsed from the JWT-token.
+ * If the user enters invalid credentials an errorMessage is displayed on the screen.
+ */
+
 import React from "react"
 import { Form, Link, redirect, useActionData, useNavigate } from "react-router-dom"
 import { loginUser } from "../service/authService"
@@ -36,7 +43,7 @@ const Login = () => {
             <Form data-testid="login-form" className="login-form" method="post" replace>
                 <input data-testid="username-field" name="username" type="text" placeholder="Username" />
 
-                <input data-testid="password-field" name="password" type="text" placeholder="Password" />
+                <input data-testid="password-field" name="password" type="password" placeholder="Password" />
 
                 <button data-testid="login-btn" className="login-btn">Sign in</button>
             </Form>

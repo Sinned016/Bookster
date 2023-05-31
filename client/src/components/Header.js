@@ -1,5 +1,9 @@
+/** Header Component
+ * With the help of JWT-token we display/render whoever is logged in
+ */
+
 import { useState, useEffect } from "react"
-import { useNavigate, useLocation, Link } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import parseJwt from "../service/jwtService";
 
 

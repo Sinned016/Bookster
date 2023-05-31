@@ -1,3 +1,6 @@
+/** UserTable component
+ * In this file we recieve all the users as a prop and proceed to render them out as a table.
+ */
 
 export default function Users({userElements}) {
 

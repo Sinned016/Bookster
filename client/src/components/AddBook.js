@@ -1,3 +1,7 @@
+/** Component AddBook
+ * We render this component whenever we press the button "Add new book"
+ */
+
 import { useState } from "react";
 import { actionAdd } from "../service/actionService";
 
@@ -43,16 +47,16 @@ const AddBook = ({toggle, render}) => {
             <h2 className="edit-title">Add new book</h2>
 
             <label className="edit-label">Title</label>
-            <input className="edit-input" onChange={handleChange} name="title" value={inputValues.title} type="text" placeholder="Insert new title..."/>
+            <input data-testid="add-book-title" className="edit-input" onChange={handleChange} name="title" value={inputValues.title} type="text" placeholder="Insert new title..."/>
 
             <label className="edit-label">Author</label>
-            <input className="edit-input" onChange={handleChange} name="author" value={inputValues.author} type="text" placeholder="Insert new author..."/>
+            <input data-testid="add-book-author" className="edit-input" onChange={handleChange} name="author" value={inputValues.author} type="text" placeholder="Insert new author..."/>
 
             <label className="edit-label">Quantity</label>
-            <input className="edit-input" onChange={handleChange} name="quantity" value={inputValues.quantity} type="number" placeholder="Insert new quantity..."/>
+            <input data-testid="add-book-quantity" className="edit-input" onChange={handleChange} name="quantity" value={inputValues.quantity} type="number" placeholder="Insert new quantity..."/>
         
             <div>
-                <button className="edit-btn" onClick={saveChanges} >Add new book</button>
+                <button data-testid="save-book-btn" className="edit-btn" onClick={saveChanges} >Add new book</button>
                 <button className="edit-btn" onClick={() => toggle(false)}>Discard changes</button>
             </div>
         </div>

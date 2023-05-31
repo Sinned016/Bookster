@@ -1,3 +1,4 @@
+import { actionDelete } from "./actionService";
 import { performRequest } from "./fetchService";
 import { getUsers } from "./userService";
 
@@ -23,7 +24,7 @@ export async function buyBooks(title, quantity) {
     return data;
 }
 
-export async function increaseBookOrder(event, books) {
+export function increaseBookOrder(event, books) {
     const { value } = event.target;
     console.log(value);
     const updateOrder = books.map((book, i) => {
@@ -40,7 +41,7 @@ export async function increaseBookOrder(event, books) {
     return updateOrder;
   }
 
-export async function decreaseBookOrder(event, books) {
+export function decreaseBookOrder(event, books) {
     const { value } = event.target;
     const updateOrder = books.map((book, i) => {
         if (parseInt(value) === parseInt(i)) {
@@ -89,3 +90,16 @@ export async function placeOrder(event, books) {
     }
   }
 
+  export async function deleteClickedBook(event, books) {
+    const { value } = event.target;
+    const order = books[value];
+  
+    await actionDelete(order.title);
+  
+    const reRender = await fetchBooks();
+    reRender.books.forEach((book) => {
+      book.order = 0;
+    });
+    console.log(reRender);
+    return { reRender };
+  }

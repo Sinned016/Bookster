@@ -1,3 +1,7 @@
+/** EditBook Component
+ * Recieve the clicked book as prop and render a pop-up window where you can edit title, author and quantity.
+ */
+
 import { useState } from "react";
 import { actionEdit } from "../service/actionService";
 import { fetchBooks } from "../service/bookService";
@@ -34,8 +38,6 @@ const EditBook = ({book, toggle, render}) => {
         } else {
             alert(`Failed to edit book ${book.title}`)
         }
-
-        
     }
 
     return (

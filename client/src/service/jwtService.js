@@ -1,4 +1,6 @@
-
+/**
+ * parseJWT is used to decode JWT-tokens. For example, name or role of who's logged in.
+ */
 // Get jwt user info
 export default function parseJwt(token) {
     if (!token) {

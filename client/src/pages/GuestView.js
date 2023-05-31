@@ -1,6 +1,13 @@
+/** GuestView Component
+ * This component will render if browse as guest.
+ * When entering this page we recieve all the books through our "loader".
+ * This component uses short-polling to rerender if it recieves new data that does not match the current version.
+ */
+
 import { useLoaderData } from "react-router-dom";
 import { fetchBooks, searchBooks } from "../service/bookService";
 import { useEffect, useState } from "react";
+import { polling } from "../service/pollingService";
 
 export function loader() {
   return fetchBooks();
@@ -17,6 +24,16 @@ export default function GuestView() {
   useEffect(() => {
     setBooks(loaderBooks.books);
   }, [loaderBooks]);
+
+  //Polling
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const newVersion = await polling(books);
+      console.log(newVersion);
+      setBooks(newVersion);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [books]);
 
 
   useEffect(() => {
