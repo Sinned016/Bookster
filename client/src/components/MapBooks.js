@@ -16,6 +16,7 @@ export default function MapBooks({books, setBooks, editBook, setEditBook, setUse
   // Order function, happens when we press the order button
   async function orderBooks(event) {
     const { data, reRender, reRenderUsers } = await placeOrder(event, books);
+    
     console.log(data);
     if (data.error === "Digital signing is invalid, request new token") {
       navigate("/login");
@@ -73,7 +74,5 @@ export default function MapBooks({books, setBooks, editBook, setEditBook, setUse
         );
     });
 
-    return (
-        mappedBooks
-    )
+    return ( mappedBooks )
 }

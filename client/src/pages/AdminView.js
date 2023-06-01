@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import parseJwt from "../service/jwtService";
 import EditBook from "../components/EditBook";
 import AddBook from "../components/AddBook";
-import Users from "../components/UserTable";
 import { getUsers } from "../service/userService";
 import UserAction from "../components/UserAction";
 import BookTable from "../components/BookTable";
@@ -19,6 +18,7 @@ import MapBooks from "../components/MapBooks";
 import MapUsers from "../components/MapUsers";
 import SubHeader from "../components/SubHeader";
 import { polling } from "../service/pollingService";
+import UserTable from "../components/UserTable";
 
 
 export async function loader() {
@@ -59,7 +59,7 @@ export default function AdminView() {
   const [action, setAction] = useState(undefined)
   
 
-  let {loaderBooks, loaderUsers} = useLoaderData();
+  let { loaderBooks, loaderUsers } = useLoaderData();
 
 
   // Adding order=0 to our books
@@ -88,7 +88,6 @@ export default function AdminView() {
     
     setAction(name)
     setUser(user);
-
     setToggleAction(true);
   }
 
@@ -102,7 +101,7 @@ export default function AdminView() {
     
     if(books !== null) {
       const mappedUsers = <MapUsers users={users} handleUserAction={handleUserAction} />
-    setUserElements(mappedUsers);
+      setUserElements(mappedUsers);
     }
     
   //eslint-disable-next-line
@@ -116,7 +115,7 @@ export default function AdminView() {
       {toggleAction && <UserAction user={user} setUsers={setUsers} toggle={setToggleAction} action={action}/>}
 
       {toggleTable && <BookTable bookElements={bookElements}/>}
-      {!toggleTable && <Users userElements={userElements}/>}
+      {!toggleTable && <UserTable userElements={userElements}/>}
 
       {addBook && <AddBook toggle={setAddBook} render={setBooks}/>}
       {editBook && <EditBook book={editBook} toggle={setEditBook} render={setBooks}/>}

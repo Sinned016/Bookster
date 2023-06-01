@@ -2,7 +2,7 @@
  * In this file we recieve all the users as a prop and proceed to render them out as a table.
  */
 
-export default function Users({userElements}) {
+export default function UserTable({userElements}) {
 
     return (
         <table data-testid="book-table" className="book-table">
